@@ -1,0 +1,83 @@
+{% macro render_movie_info_combobox(label, add_label, api_url) %}
+<div x-data="{
+        allOptions: [],
+        options: [],
+        isOpen: false,
+        openedWithKeyboard: false,
+        selectedOption: null,
+        setSelectedOption(option) {
+            this.selectedOption = option
+            this.isOpen = false
+            this.openedWithKeyboard = false
+            this.$refs.hiddenTextField.value = option.value
+        },
+        async getFilteredOptions(query) {
+            if (!query.trim()) {
+              this.options = [];
+              return;
+            }
+            try {
+              const response = await fetch('{{ api_url }}/' + query.trim());
+              const data = await response.json();
+              this.options = data.map(item => ({value: item.id, label: item.name}));
+            } catch {
+              this.options = [];
+            }
+            if (this.options.length === 0) {
+                this.$refs.noResultsMessage.classList.remove('hidden')
+            } else {
+                this.$refs.noResultsMessage.classList.add('hidden')
+            }
+        },
+        handleKeydownOnOptions(event) {
+            if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 8) {
+                this.$refs.searchField.focus()
+            }
+        },
+    }" class="flex w-full max-w-xs flex-col gap-1" x-on:keydown="handleKeydownOnOptions($event)"
+     x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
+     x-init="options = allOptions">
+  <div class="mb-2">{{ label }}</div>
+  <div class="relative">
+    <button type="button"
+            class="w-full bg-slate-500 text-white p-2"
+            x-on:click="isOpen = ! isOpen" x-on:keydown.down.prevent="openedWithKeyboard = true"
+            x-on:keydown.enter.prevent="openedWithKeyboard = true"
+            x-on:keydown.space.prevent="openedWithKeyboard = true">
+      {{ add_label }}
+    </button>
+
+    <input id="addGenre" name="addGenre" x-ref="hiddenTextField" hidden="" />
+    <div x-show="isOpen || openedWithKeyboard" id="makesList"
+         class="absolute left-0 top-11 z-10 w-full overflow-hidden border border-outline bg-background"
+         x-on:click.outside="isOpen = false, openedWithKeyboard = false"
+         x-on:keydown.down.prevent="$focus.wrap().next()"
+         x-on:keydown.up.prevent="$focus.wrap().previous()"
+         x-trap="openedWithKeyboard">
+
+      <div class="relative">
+        <input type="text"
+               class="w-full border-b bg-background p-2 text-sm focus:outline-hidden focus-visible:border-primary"
+               name="searchField" x-on:input="getFilteredOptions($el.value)"
+               x-ref="searchField" placeholder="Поиск..." />
+      </div>
+
+      <ul class="flex max-h-44 flex-col overflow-y-auto">
+        <li class="hidden px-4 py-2 text-sm text-on-surface dark:text-on-surface-dark"
+            x-ref="noResultsMessage">
+          <span>Результатов не найдено :(</span>
+        </li>
+        <template x-for="(item, index) in options" x-bind:key="item.value">
+          <li class="combobox-option inline-flex justify-between p-2 text-sm cursor-pointer"
+              role="option" x-on:click="setSelectedOption(item)"
+              x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index"
+              tabindex="0">
+            <span x-bind:class="selectedOption == item ? 'font-bold' : null"
+                  x-text="item.label"></span>
+          </li>
+        </template>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endmacro %}

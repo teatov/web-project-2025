@@ -1,6 +1,27 @@
 {% extends "_layout.jinja" %} {% block title %}Профиль: {{ user.username }}{% endblock %}
 {% block content %}
+{% from "components/_log_icons.jinja" import render_log_icons %}
 <h1 class="text-2xl font-bold">Профиль: {{ user.username }}</h1>
 <p class="mb-4">Учётная запись создана: {{ format_date(user.created_at) }}</p>
 <h2 class="text-xl font-bold mb-4">Журнал фильмов</h2>
+<ul class="space-y-4">
+  {% for log in logs %}
+  <li class="flex gap-4">
+    <a href="/movie/{{ log.movie.slug }}"
+       class="hover:text-slate-500">
+      <img src="/uploads/{{ log.movie.poster_file }}" alt="{{ log.movie.title }}"
+           class="aspect-2/3 h-40 object-cover rounded-md">
+    </a>
+    <div class="grow">
+      <div>
+        <span class="font-bold">{{ log.movie.title }}</span>
+        <span class="font-light">{{ format_year(log.movie.release_date) }}</span>
+      </div>
+      <p><em>{{ format_date(log.created_at) }}</em></p>
+      {{ render_log_icons(log) }}
+      <p>{{ log.review }}</p>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
 {% endblock %}

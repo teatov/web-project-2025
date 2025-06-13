@@ -6,6 +6,7 @@ from flask import (
     request,
     send_from_directory,
 )
+from sqlalchemy import func
 import forms
 import upload
 import database
@@ -62,10 +63,30 @@ def movie(slug: str):
         .filter(
             models.UserMovieLog.movie_id == movie.id, models.UserMovieLog.review != None
         )
+        .order_by(models.UserMovieLog.created_at.desc())
         .all()
     )
 
-    return render_template("main/movie.jinja", movie=movie, reviews=reviews)
+    watches = (
+        db.query(func.count(models.UserMovieLog.movie_id))
+        .filter(
+            models.UserMovieLog.movie_id == movie.id,
+            models.UserMovieLog.watched == True,
+        )
+        .scalar()
+    )
+    likes = (
+        db.query(func.count(models.UserMovieLog.movie_id))
+        .filter(
+            models.UserMovieLog.movie_id == movie.id,
+            models.UserMovieLog.liked == True,
+        )
+        .scalar()
+    )
+
+    return render_template(
+        "main/movie.jinja", movie=movie, reviews=reviews, watches=watches, likes=likes
+    )
 
 
 @blueprint.route("/movie/<slug>/log", methods=["GET", "POST"])
@@ -112,7 +133,14 @@ def profile(id: int):
     if not user:
         abort(404)
 
-    return render_template("main/profile.jinja", user=user)
+    logs = (
+        db.query(models.UserMovieLog)
+        .filter(models.UserMovieLog.user_id == user.id)
+        .order_by(models.UserMovieLog.created_at.desc())
+        .all()
+    )
+
+    return render_template("main/profile.jinja", user=user, logs=logs)
 
 
 @blueprint.route("/uploads/<name>")

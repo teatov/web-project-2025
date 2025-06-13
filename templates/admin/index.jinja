@@ -3,11 +3,16 @@
 <p class="pb-4">
   <a href="/admin/movie-create" class="bg-slate-500 text-white p-2">Добавить новый фильм</a>
 </p>
-<ul>
+<ul class="grid grid-cols-4 gap-2">
   {% for movie in movies %}
-  <li>
+  <li class=" text-center">
     <a href="/admin/movie-edit/{{ movie.id }}" class="hover:text-slate-500">
-      {{ movie.title }}
+      <img src="{{ movie.poster_file }}" alt="{{ movie.title }}"
+           class="aspect-150/255 object-cover rounded-md">
+      <div>
+        <span class="font-bold">{{ movie.title }}</span>
+        <span class="font-light">{{ format_year(movie.release_date) }}</span>
+      </div>
     </a>
   </li>
   {% endfor %}

@@ -32,12 +32,20 @@ def movie_create():
     form = forms.Movie(request.form)
     if request.method == "POST" and form.validate():
         db = database.create_session()
+
         movie = models.Movie(
             title=form.title.data,
             release_date=form.release_date.data,
             description=form.description.data,
         )
         movie.set_slug()
+
+        if db.query(models.Movie).filter(models.Movie.slug == movie.slug).first():
+            return render_template(
+                "admin/movie-form.jinja",
+                form=form,
+                message="Фильм с таким названием уже существует",
+            )
 
         poster_file_url = upload_file(request.files["poster_file"])
         if poster_file_url:
@@ -51,14 +59,14 @@ def movie_create():
     return render_template("admin/movie-form.jinja", form=form)
 
 
-@blueprint.route("/admin/movie-edit/<int:id>", methods=["GET", "POST"])
+@blueprint.route("/admin/movie-edit/<slug>", methods=["GET", "POST"])
 @login_required
-def movie_edit(id: int):
+def movie_edit(slug: str):
     if not current_user.is_admin:
         return redirect("/")
 
     db = database.create_session()
-    movie = db.query(models.Movie).filter(models.Movie.id == id).first()
+    movie = db.query(models.Movie).filter(models.Movie.slug == slug).first()
 
     if not movie:
         abort(404)
@@ -70,12 +78,24 @@ def movie_edit(id: int):
         movie.description = form.description.data
         movie.set_slug()
 
+        if (
+            db.query(models.Movie)
+            .filter(models.Movie.slug == movie.slug, models.Movie.id != movie.id)
+            .first()
+        ):
+            return render_template(
+                "admin/movie-form.jinja",
+                form=form,
+                movie=movie,
+                message="Фильм с таким названием уже существует",
+            )
+
         poster_file_url = upload_file(request.files["poster_file"])
         if poster_file_url:
             movie.poster_file = poster_file_url
 
         db.commit()
         db.refresh(movie)
-        return redirect(f"/movie/{movie.id}")
+        return redirect(f"/movie/{movie.slug}")
 
     return render_template("admin/movie-form.jinja", form=form, movie=movie)

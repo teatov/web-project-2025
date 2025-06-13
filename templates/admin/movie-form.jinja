@@ -5,15 +5,20 @@
 <h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
 <form method="post" class="space-y-4" enctype="multipart/form-data">
   <div class="flex gap-4">
+    {% if movie %}
     <img src="{{ movie.poster_file }}" alt="{{ movie.title }}"
          class="aspect-2/3 h-60 object-cover rounded-md">
-    <div class="w-full">
+    {% endif %}
+    <div class="w-full space-y-4">
       {{ render_field(form.title, class="border p-2 w-full") }}
       {{ render_field(form.release_date) }}
       {{ render_field(form.poster_file) }}
     </div>
   </div>
   {{ render_field(form.description, rows="10", class="border p-2 w-full") }}
+  {% if message %}
+  <p class="text-red-500">{{message}}</p>
+  {% endif %}
   <button type="submit" class="bg-slate-500 text-white p-2">Сохранить</button>
 </form>
 {% endblock %}

@@ -8,6 +8,9 @@
   <a href="/search?{{ query }}={{ stat.id }}" class="hover:text-slate-500 underline">
     {{ stat.name }}
   </a>
+  {% if loop.index < stats|length %}
+  ,
+  {% endif %}
   {% endfor %}
 </div>
 {% endmacro %}

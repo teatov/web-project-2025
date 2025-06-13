@@ -2,7 +2,7 @@
 {% from "components/_movie_stat.jinja" import render_movie_stat %}
 {% from "components/_log_icons.jinja" import render_log_icons, icon_watch, icon_like %}
 <div class="flex gap-4">
-  <div class="space-y-4">
+  <div class="space-y-4 flex-none">
     <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
          class="aspect-2/3 h-80 object-cover rounded-md">
     {% if current_user.is_authenticated %}

@@ -161,6 +161,8 @@ def make_generic_index(
         db = database.create_session()
         records = db.query(model).all()
 
+        form = forms.GenericRecord(request.form)
+
         return render_template(
             "admin/generic-records.jinja",
             records=records,
@@ -168,6 +170,7 @@ def make_generic_index(
             create_label=create_label,
             create_url=create_url,
             edit_url=edit_url,
+            form=form,
         )
 
     return generic_index
@@ -183,7 +186,7 @@ def make_generic_create(model, redirect_url: str, create_title: str):
             db = database.create_session()
 
             record = model(
-                name=form.name.data,
+                name=form.name.data.strip(),
             )
 
             db.add(record)
@@ -211,7 +214,7 @@ def make_generic_edit(model, id: int, redirect_url: str, delete_action: str):
 
         form = forms.GenericRecord(request.form, record)
         if request.method == "POST" and form.validate():
-            record.name = form.name.data
+            record.name = form.name.data.strip()
 
             db.commit()
             db.refresh(record)

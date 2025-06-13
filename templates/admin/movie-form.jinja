@@ -7,7 +7,7 @@
 <form method="post" class="space-y-4" enctype="multipart/form-data">
   <div class="flex gap-4">
     {% if movie %}
-    <a href="/movie/{{ movie.slug }}">
+    <a href="/movie/{{ movie.slug }}" c>
       <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
            class="aspect-2/3 h-60 object-cover rounded-md">
     </a>

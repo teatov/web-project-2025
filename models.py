@@ -145,8 +145,16 @@ class MovieStaff(Base, SerializerMixin):
 class UserMovieLog(Base, SerializerMixin):
     __tablename__ = "user_movie_log"
 
-    user_id = (sqlalchemy.Column("user_id",sqlalchemy.ForeignKey("user.id"), primary_key=True))
-    movie_id = (sqlalchemy.Column("movie_id",sqlalchemy.ForeignKey("movie.id"), primary_key=True))
+    user_id = sqlalchemy.Column(
+        "user_id",
+        sqlalchemy.ForeignKey("user.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    movie_id = sqlalchemy.Column(
+        "movie_id",
+        sqlalchemy.ForeignKey("movie.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
     watched = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     liked = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     watchlist = sqlalchemy.Column(sqlalchemy.Boolean, default=False)

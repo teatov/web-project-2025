@@ -1,10 +1,11 @@
 {% extends "admin/_layout.jinja" %} {% block title %}{{ title }}{% endblock %}
 {% block content_admin %}
+{% from "_formhelpers.jinja" import render_field %}
 <h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
-<p class="mb-4">
-  <a href="{{ create_url }}"
-     class="bg-slate-500 text-white p-2 inline-block">{{ create_label }}</a>
-</p>
+<form method="post" class="flex gap-4 items-end mb-4" action="{{ create_url }}">
+  {{ render_field(form.name, div_class="flex flex-col gap-2 grow") }}
+  <button type="submit" class="bg-slate-500 text-white p-2">{{ create_label }}</button>
+</form>
 <ul>
   {% for record in records %}
   <li>

@@ -47,7 +47,7 @@ class Movie(Form):
     release_date = DateField("Дата выхода", [DataRequired()])
     poster_file = FileField("Постер", [])
     description = StringField(
-        "Описание", [validators.Length(max=100)], widget=TextArea()
+        "Описание", [validators.Length(max=1000)], widget=TextArea()
     )
     genres = NonValidatingSelectMultipleField("Жанры")
     studios = NonValidatingSelectMultipleField("Студии")
@@ -69,4 +69,4 @@ class UserMovieLog(Form):
     liked = BooleanField("Понравилось", [])
     watchlist = BooleanField("Посмотреть позже", [])
     rating = IntegerField("Рейтинг", [])
-    review = StringField("Обзор", [validators.Length(max=500)], widget=TextArea())
+    review = StringField("Обзор", [validators.Length(max=1000)], widget=TextArea())

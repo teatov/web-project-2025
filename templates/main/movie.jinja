@@ -1,4 +1,5 @@
 {% extends "_layout.jinja" %} {% block title %}{{ movie.title }}{% endblock %} {% block content %}
+{% from "components/_movie_stat.jinja" import render_movie_stat %}
 <div class="flex gap-4">
   <div>
     <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
@@ -21,6 +22,9 @@
         <div class="grow border-b mb-1 border-dotted"></div>
       </div>
       <div>{{ format_date(movie.release_date) }}</div>
+      {{ render_movie_stat(movie.genres, "Жанры") }}
+      {{ render_movie_stat(movie.studios, "Студии") }}
+      {{ render_movie_stat(movie.staff, "Персоналии") }}
     </div>
   </div>
 </div>

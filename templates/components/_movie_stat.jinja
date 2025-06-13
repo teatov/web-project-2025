@@ -1,0 +1,11 @@
+{% macro render_movie_stat(stats, label) %}
+<div class="flex">
+  <div class="font-light">{{ label }}</div>
+  <div class="grow border-b mb-1 border-dotted"></div>
+</div>
+<div>
+  {% for stat in stats %}
+  <span>{{ stat.name }}</span>
+  {% endfor %}
+</div>
+{% endmacro %}

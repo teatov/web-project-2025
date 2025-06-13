@@ -22,9 +22,9 @@
         <div class="grow border-b mb-1 border-dotted"></div>
       </div>
       <div>{{ format_date(movie.release_date) }}</div>
-      {{ render_movie_stat(movie.genres, "Жанры") }}
-      {{ render_movie_stat(movie.studios, "Студии") }}
-      {{ render_movie_stat(movie.staff, "Персоналии") }}
+      {{ render_movie_stat(movie.genres, "Жанры", "genre") }}
+      {{ render_movie_stat(movie.studios, "Студии", "studio") }}
+      {{ render_movie_stat(movie.staff, "Персоналии", "staff") }}
     </div>
   </div>
 </div>

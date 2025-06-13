@@ -1,11 +1,13 @@
-{% macro render_movie_stat(stats, label) %}
+{% macro render_movie_stat(stats, label, query) %}
 <div class="flex">
   <div class="font-light">{{ label }}</div>
   <div class="grow border-b mb-1 border-dotted"></div>
 </div>
 <div>
   {% for stat in stats %}
-  <span>{{ stat.name }}</span>
+  <a href="/search?{{ query }}={{ stat.id }}" class="hover:text-slate-500 underline">
+    {{ stat.name }}
+  </a>
   {% endfor %}
 </div>
 {% endmacro %}

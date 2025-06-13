@@ -20,19 +20,25 @@ def index():
 @blueprint.route("/search")
 def search():
     query = request.args.get("query")
-
-    if not query:
-        return render_template("main/search.jinja", movies=[], query=query)
+    genre = request.args.get("genre")
+    staff = request.args.get("staff")
+    studio = request.args.get("studio")
 
     db = database.create_session()
-    movies = (
-        db.query(models.Movie)
-        .filter(models.Movie.title.like(f"%{query}%"))
-        .order_by(models.Movie.created_at.desc())
-        .all()
-    )
+    movies = db.query(models.Movie)
 
-    return render_template("main/search.jinja", movies=movies, query=query)
+    if query:
+        movies = movies.filter(models.Movie.title.like(f"%{query}%"))
+    if genre:
+        movies = movies.filter(models.Movie.genres.any(id=genre))
+    if staff:
+        movies = movies.filter(models.Movie.staff.any(id=staff))
+    if studio:
+        movies = movies.filter(models.Movie.studios.any(id=studio))
+
+    movies = movies.order_by(models.Movie.created_at.desc()).all()
+
+    return render_template("main/search.jinja", movies=movies)
 
 
 @blueprint.route("/movie/<slug>")

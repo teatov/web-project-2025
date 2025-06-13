@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% endblock %}</title>
+  <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+</head>
+
+<body>
+  <header
+          class="@container max-w-4xl m-auto flex justify-between items-center">
+    <nav class="m-4 space flex gap-4 items-center">
+      <a href="/" class="flex items-center font-bold"><img
+             src="{{ url_for('static', filename='favicon.svg') }}"
+             alt="logo"
+             width="24"
+             height="24" />MovieLog</a>
+    </nav>
+    <div class="m-4 space flex gap-4 items-center">
+      {% if current_user.is_authenticated %}
+      <form method="post" action="/logout">
+        <button type="submit" class="hover:text-red-500">Выход</button>
+      </form>
+      {% else %}
+      <a href="/signup" class="hover:text-slate-500">Регистрация</a>
+      <a href="/login" class="hover:text-slate-500">Вход</a>
+      {% endif %}
+    </div>
+  </header>
+  <main class="@container max-w-4xl m-auto">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+
+</html>

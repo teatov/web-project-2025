@@ -1,0 +1,4 @@
+node_modules
+static/style.css
+_data.db
+__pycache__

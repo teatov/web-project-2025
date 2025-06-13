@@ -28,7 +28,7 @@ def search():
     movies = db.query(models.Movie)
 
     if query:
-        movies = movies.filter(models.Movie.title.like(f"%{query}%"))
+        movies = movies.filter(models.Movie.title.ilike(f"%{query}%"))
     if genre:
         movies = movies.filter(models.Movie.genres.any(id=genre))
     if staff:

@@ -1,20 +1,9 @@
 {% extends "admin/_layout.jinja" %} {% block title %}Фильмы{% endblock %} {% block content_admin %}
+{% from "components/_movie_ul.jinja" import render_movie_ul %}
 <h1 class="text-2xl font-bold mb-4">Фильмы</h1>
-<p class="pb-4">
-  <a href="/admin/movie-create" class="bg-slate-500 text-white p-2">Добавить новый фильм</a>
+<p class="mb-4">
+  <a href="/admin/movie-create" class="bg-slate-500 text-white p-2 inline-block">Добавить новый
+    фильм</a>
 </p>
-<ul class="grid grid-cols-4 gap-2">
-  {% for movie in movies %}
-  <li class=" text-center">
-    <a href="/admin/movie-edit/{{ movie.id }}" class="hover:text-slate-500">
-      <img src="{{ movie.poster_file }}" alt="{{ movie.title }}"
-           class="aspect-2/3 w-full object-cover rounded-md">
-      <div>
-        <span class="font-bold">{{ movie.title }}</span>
-        <span class="font-light">{{ format_year(movie.release_date) }}</span>
-      </div>
-    </a>
-  </li>
-  {% endfor %}
-</ul>
+{{ render_movie_ul(movies, admin=True) }}
 {% endblock %}

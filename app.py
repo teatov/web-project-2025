@@ -6,6 +6,7 @@ from flask_login import LoginManager
 import routes
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret_key"
+app.config['UPLOAD_FOLDER'] = "./uploads"
 login_manager = LoginManager()
 login_manager.init_app(app)
 

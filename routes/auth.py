@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, abort
+from flask import Blueprint, render_template, redirect, request
 import database
 import models
 import forms
@@ -9,12 +9,7 @@ from flask_login import (
     logout_user,
 )
 
-blueprint = Blueprint("blueprint", __name__, template_folder="templates")
-
-
-@blueprint.route("/")
-def index():
-    return render_template("index.jinja")
+blueprint = Blueprint("auth", __name__, template_folder="templates")
 
 
 @blueprint.route("/signup", methods=["GET", "POST"])
@@ -71,18 +66,3 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
-
-
-@blueprint.route("/admin")
-def admin_index():
-    return render_template("admin/index.jinja")
-
-
-@blueprint.errorhandler(404)
-def page_not_found(_):
-    return render_template("error.jinja", message="404 Страница не найдена"), 404
-
-
-@blueprint.errorhandler(405)
-def page_not_found(_):
-    return render_template("error.jinja", message="405 Метод не разрешён"), 405

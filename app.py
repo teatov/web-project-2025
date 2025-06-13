@@ -3,14 +3,21 @@ import datetime
 import database
 import models
 from flask_login import LoginManager
-import routes
+import routes.admin
+import routes.error
+import routes.main
+import routes.auth
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret_key"
 app.config['UPLOAD_FOLDER'] = "./uploads"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-app.register_blueprint(routes.blueprint)
+app.register_blueprint(routes.main.blueprint)
+app.register_blueprint(routes.auth.blueprint)
+app.register_blueprint(routes.admin.blueprint)
+app.register_blueprint(routes.error.blueprint)
 
 database.global_init("_data.db")
 

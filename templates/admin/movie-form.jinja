@@ -7,8 +7,10 @@
 <form method="post" class="space-y-4" enctype="multipart/form-data">
   <div class="flex gap-4">
     {% if movie %}
-    <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
-         class="aspect-2/3 h-60 object-cover rounded-md">
+    <a href="/movie/{{ movie.slug }}">
+      <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
+           class="aspect-2/3 h-60 object-cover rounded-md">
+    </a>
     {% endif %}
     <div class="grow space-y-4">
       {{ render_field(form.title, class="border p-2 w-full") }}

@@ -6,7 +6,7 @@ from flask_login import (
 import forms
 import database
 import models
-from upload import upload_file
+from upload import upload_file, delete_file
 
 blueprint = Blueprint("admin", __name__, template_folder="templates")
 
@@ -47,9 +47,8 @@ def movie_create():
                 message="Фильм с таким названием уже существует",
             )
 
-        poster_file_url = upload_file(request.files["poster_file"])
-        if poster_file_url:
-            movie.poster_file = poster_file_url
+        poster_file_url = upload_file(request.files["poster_file"], movie.slug)
+        movie.poster_file = poster_file_url
 
         db.add(movie)
         db.commit()
@@ -90,8 +89,9 @@ def movie_edit(slug: str):
                 message="Фильм с таким названием уже существует",
             )
 
-        poster_file_url = upload_file(request.files["poster_file"])
+        poster_file_url = upload_file(request.files["poster_file"], movie.slug)
         if poster_file_url:
+            delete_file(movie.poster_file)
             movie.poster_file = poster_file_url
 
         db.commit()
@@ -113,6 +113,7 @@ def movie_delete(id: str):
     if not movie:
         abort(404)
 
+    delete_file(movie.poster_file)
     db.delete(movie)
     db.commit()
 

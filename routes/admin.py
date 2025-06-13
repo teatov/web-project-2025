@@ -89,6 +89,13 @@ def movie_edit(slug: str):
                 message="Фильм с таким названием уже существует",
             )
 
+        genres = (
+            db.query(models.MovieGenre)
+            .filter(models.MovieGenre.id.in_([int(i) for i in form.genres.data]))
+            .all()
+        )
+        movie.genres = genres
+
         poster_file_url = upload_file(request.files["poster_file"], movie.slug)
         if poster_file_url:
             delete_file(movie.poster_file)

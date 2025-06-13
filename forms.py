@@ -12,6 +12,11 @@ from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
 
 
+class NonValidatingSelectMultipleField(SelectMultipleField):
+    def pre_validate(self, form):
+        pass
+
+
 class SignUp(Form):
     class Meta:
         locales = ["ru_RU", "ru"]
@@ -43,7 +48,7 @@ class Movie(Form):
     description = StringField(
         "Описание", [validators.Length(max=100)], widget=TextArea()
     )
-    genres = SelectMultipleField("Жанры")
+    genres = NonValidatingSelectMultipleField("Жанры")
 
 
 class GenericRecord(Form):

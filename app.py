@@ -9,6 +9,7 @@ import routes.auth
 import upload
 import resources
 from flask_restful import Api
+import json
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret_key"
@@ -33,8 +34,17 @@ def format_year(date: datetime.date) -> str:
     return date.strftime("%Y")
 
 
+def generic_records_to_combobox_items(models) -> str:
+    return json.dumps(
+        [{"value": model.id, "label": model.name} for model in models]
+    ).replace('"', "'")
+
+
 app.jinja_env.globals.update(format_date=format_date)
 app.jinja_env.globals.update(format_year=format_year)
+app.jinja_env.globals.update(
+    generic_records_to_combobox_items=generic_records_to_combobox_items
+)
 
 
 @login_manager.user_loader

@@ -1,6 +1,6 @@
-{% macro render_movie_info_combobox(label, name, add_label, api_url) %}
+{% macro render_movie_info_combobox(label, name, add_label, api_url, selected_items) %}
 <div x-data="{
-        selectedItems: [],
+        selectedItems: {{ generic_records_to_combobox_items(selected_items) }},
         allOptions: [],
         options: [],
         isOpen: false,

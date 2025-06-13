@@ -47,13 +47,20 @@ def movie_create():
                 message="Фильм с таким названием уже существует",
             )
 
+        genres = (
+            db.query(models.MovieGenre)
+            .filter(models.MovieGenre.id.in_([int(i) for i in form.genres.data]))
+            .all()
+        )
+        movie.genres = genres
+
         poster_file_url = upload_file(request.files["poster_file"], movie.slug)
         movie.poster_file = poster_file_url
 
         db.add(movie)
         db.commit()
         db.refresh(movie)
-        return redirect(f"/movie/{movie.id}")
+        return redirect(f"/movie/{movie.slug}")
 
     return render_template("admin/movie-form.jinja", form=form)
 

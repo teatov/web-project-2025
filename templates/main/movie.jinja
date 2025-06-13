@@ -5,7 +5,8 @@
     <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
          class="aspect-2/3 h-80 object-cover rounded-md">
     {% if current_user.is_authenticated %}
-    <a href="/movie/{{ movie.slug }}/log" class="bg-slate-500 text-white p-2 inline-block w-full text-center">
+    <a href="/movie/{{ movie.slug }}/log"
+       class="bg-slate-500 text-white p-2 inline-block w-full text-center">
       Журналировать!
     </a>
     {% endif %}
@@ -31,6 +32,19 @@
       {{ render_movie_stat(movie.studios, "Студии", "studio") }}
       {{ render_movie_stat(movie.staff, "Персоналии", "staff") }}
     </div>
+    <h2 class="text-xl font-bold mb-4">Отзывы</h2>
+    <ul class="space-y-4">
+      {% for review in reviews %}
+      <li>
+        <div>
+          <a href="/profile/{{ review.user_id }}"
+             class="hover:text-slate-500 underline">{{ review.user.username }}</a>
+          <em>{{ format_date(review.created_at) }}</em>
+          <p>{{ review.review }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
 </div>
 

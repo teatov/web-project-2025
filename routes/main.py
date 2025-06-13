@@ -1,4 +1,11 @@
-from flask import Blueprint, abort, redirect, render_template, request, send_from_directory
+from flask import (
+    Blueprint,
+    abort,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+)
 import forms
 import upload
 import database
@@ -50,7 +57,15 @@ def movie(slug: str):
     if not movie:
         abort(404)
 
-    return render_template("main/movie.jinja", movie=movie)
+    reviews = (
+        db.query(models.UserMovieLog)
+        .filter(
+            models.UserMovieLog.movie_id == movie.id, models.UserMovieLog.review != None
+        )
+        .all()
+    )
+
+    return render_template("main/movie.jinja", movie=movie, reviews=reviews)
 
 
 @blueprint.route("/movie/<slug>/log", methods=["GET", "POST"])
@@ -79,8 +94,8 @@ def movie_log(slug: str):
         log.liked = form.liked.data
         log.watchlist = form.watchlist.data
         log.rating = form.rating.data
-        log.review = form.review.data
-    
+        log.review = form.review.data or None
+
         if not log.created_at:
             db.add(log)
         db.commit()

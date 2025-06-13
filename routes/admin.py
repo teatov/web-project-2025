@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, render_template, redirect, request
+from flask import Blueprint, abort, render_template, redirect, request, url_for
 from flask_login import (
     login_required,
     current_user,
@@ -6,6 +6,7 @@ from flask_login import (
 import forms
 import database
 import models
+from upload import upload_file
 
 blueprint = Blueprint("admin", __name__, template_folder="templates")
 
@@ -38,6 +39,10 @@ def movie_create():
         )
         movie.set_slug()
 
+        poster_file_url = upload_file(request.files["poster_file"])
+        if poster_file_url:
+            movie.poster_file = poster_file_url
+
         db.add(movie)
         db.commit()
         db.refresh(movie)
@@ -64,6 +69,10 @@ def movie_edit(id: int):
         movie.release_date = form.release_date.data
         movie.description = form.description.data
         movie.set_slug()
+
+        poster_file_url = upload_file(request.files["poster_file"])
+        if poster_file_url:
+            movie.poster_file = poster_file_url
 
         db.commit()
         db.refresh(movie)

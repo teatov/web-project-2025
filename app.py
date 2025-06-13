@@ -7,10 +7,12 @@ import routes.admin
 import routes.error
 import routes.main
 import routes.auth
+import upload
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret_key"
-app.config['UPLOAD_FOLDER'] = "./uploads"
+app.config["UPLOAD_FOLDER"] = upload.UPLOAD_FOLDER
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1000 * 1000
 login_manager = LoginManager()
 login_manager.init_app(app)
 

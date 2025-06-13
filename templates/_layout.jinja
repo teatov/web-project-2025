@@ -14,7 +14,7 @@
 <body>
   <header
           class="@container max-w-4xl m-auto flex justify-between items-center">
-    <nav class="m-4 space flex gap-4 items-center">
+    <nav class="py-4 space flex gap-4 items-center">
       <a href="/" class="flex items-center font-bold"><img
              src="{{ url_for('static', filename='favicon.svg') }}"
              alt="logo"
@@ -25,7 +25,7 @@
       <input type="text" id="query" name="query" maxlength="100" class="border p-2"
              placeholder="Поиск..." />
     </form>
-    <div class="m-4 space flex gap-4 items-center">
+    <div class="py-4 space flex gap-4 items-center">
       {% if current_user.is_authenticated %}
       {% if current_user.is_admin %}
       <a href="/admin" class="hover:text-slate-500">Админ-панель</a>

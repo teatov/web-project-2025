@@ -42,3 +42,10 @@ class Movie(Form):
     description = StringField(
         "Описание", [validators.Length(max=100)], widget=TextArea()
     )
+
+
+class GenericRecord(Form):
+    class Meta:
+        locales = ["ru_RU", "ru"]
+
+    name = StringField("Название", [validators.Length(max=100), DataRequired()])

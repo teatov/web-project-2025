@@ -118,3 +118,120 @@ def movie_delete(id: str):
     db.commit()
 
     return redirect(f"/admin")
+
+
+def make_generic_index(model, title: str, create_label: str):
+    def generic_index():
+        if not current_user.is_admin:
+            return redirect("/")
+
+        db = database.create_session()
+        records = db.query(model).all()
+
+        return render_template(
+            "admin/generic-records.jinja",
+            records=records,
+            title=title,
+            create_label=create_label,
+        )
+
+    return generic_index
+
+
+def make_generic_create(model, redirect_url: str, create_title: str):
+    def generic_create():
+        if not current_user.is_admin:
+            return redirect("/")
+
+        form = forms.GenericRecord(request.form)
+        if request.method == "POST" and form.validate():
+            db = database.create_session()
+
+            record = model(
+                name=form.name.data,
+            )
+
+            db.add(record)
+            db.commit()
+            db.refresh(record)
+            return redirect(redirect_url)
+
+        return render_template(
+            "admin/generic-record-form.jinja", form=form, create_title=create_title
+        )
+
+    return generic_create
+
+
+def make_generic_edit(model, id: int, redirect_url: str, delete_action: str):
+    def generic_edit():
+        if not current_user.is_admin:
+            return redirect("/")
+
+        db = database.create_session()
+        record = db.query(model).filter(model.id == id).first()
+
+        if not record:
+            abort(404)
+
+        form = forms.GenericRecord(request.form, record)
+        if request.method == "POST" and form.validate():
+            record.name = form.name.data
+
+            db.commit()
+            db.refresh(record)
+            return redirect(redirect_url)
+
+        return render_template(
+            "admin/generic-record-form.jinja",
+            form=form,
+            record=record,
+            delete_action=delete_action,
+        )
+
+    return generic_edit
+
+
+def make_generic_delete(model, id: int, redirect_url: str):
+    def generic_delete():
+        if not current_user.is_admin:
+            return redirect("/")
+
+        db = database.create_session()
+        record = db.query(model).filter(model.id == id).first()
+
+        if not record:
+            abort(404)
+
+        db.delete(record)
+        db.commit()
+
+        return redirect(redirect_url)
+
+    return generic_delete
+
+
+@blueprint.route("/admin/studios")
+@login_required
+def studios_index():
+    return make_generic_index(models.MovieStudio, "Студии", "Добавить новую студию")()
+
+
+@blueprint.route("/admin/studio-create", methods=["GET", "POST"])
+@login_required
+def studio_create():
+    return make_generic_create(models.MovieStudio, "/admin/studios", "Новая студия")()
+
+
+@blueprint.route("/admin/studio-edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def studio_edit(id: int):
+    return make_generic_edit(
+        models.MovieStudio, id, "/admin/studios", "/admin/studio-delete"
+    )()
+
+
+@blueprint.route("/admin/studio-delete/<int:id>", methods=["GET", "POST"])
+@login_required
+def studio_delete(id: int):
+    return make_generic_delete(models.MovieStudio, id, "/admin/studios")()

@@ -1,0 +1,17 @@
+{% extends "admin/_layout.jinja" %} {% block title %}{{ title }}{% endblock %}
+{% block content_admin %}
+<h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
+<p class="mb-4">
+  <a href="/admin/studio-create"
+     class="bg-slate-500 text-white p-2 inline-block">{{ create_label }}</a>
+</p>
+<ul>
+  {% for record in records %}
+  <li>
+    <a href="/admin/studio-edit/{{ record.id }}" class="hover:text-slate-500">
+      {{ record.name }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

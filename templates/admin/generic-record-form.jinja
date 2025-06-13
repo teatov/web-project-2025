@@ -1,0 +1,18 @@
+{% set title = "Редактирование: " + record.name if record else create_title %}
+{% extends "admin/_layout.jinja" %} {% block title %}{{ title }}{% endblock %}
+{% block content_admin %}
+{% from "_formhelpers.jinja" import render_field %}
+<h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
+<form method="post" class="space-y-4">
+  {{ render_field(form.name) }}
+  {% if message %}
+  <p class="text-red-500">{{message}}</p>
+  {% endif %}
+  <button type="submit" class="bg-slate-500 text-white p-2">Сохранить</button>
+</form>
+{% if record %}
+<form method="post" action="{{ delete_action }}/{{ record.id }}" class="mt-4">
+  <button type="submit" class="bg-red-500 text-white p-2">Удалить</button>
+</form>
+{% endif %}
+{% endblock %}

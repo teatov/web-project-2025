@@ -1,9 +1,15 @@
 {% extends "_layout.jinja" %} {% block content %}
-<div class="flex">
+<div class="flex gap-4">
   <aside class="w-40">
-    <a href="/admin" class="hover:text-slate-500">Фильмы</a>
+    <ul>
+      <li><a href="/admin" class="hover:text-slate-500">Фильмы</a></li>
+      <li><a href="/admin/studios" class="hover:text-slate-500">Студии</a></li>
+      <li><a href="/admin/genres" class="hover:text-slate-500">Жанры</a></li>
+      <li><a href="/admin/people" class="hover:text-slate-500">Персоналии</a></li>
+      <li><a href="/admin/countries" class="hover:text-slate-500">Страны</a></li>
+    </ul>
   </aside>
-  <div class="grow">
+  <div class="w-full">
     {% block content_admin %}{% endblock %}
   </div>
 </div>

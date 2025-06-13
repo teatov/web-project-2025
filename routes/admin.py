@@ -3,6 +3,7 @@ from flask_login import (
     login_required,
     current_user,
 )
+from slugify import slugify
 import forms
 import database
 import models
@@ -23,6 +24,43 @@ def admin_index():
     return render_template("admin/index.jinja", movies=movies)
 
 
+def before_save_movie(movie, form, db):
+    with db.no_autoflush:
+        if (
+            db.query(models.Movie)
+            .filter(
+                models.Movie.slug == slugify(form.title.data), models.Movie.id != movie.id
+            )
+            .first()
+        ):
+            return (
+                movie,
+                render_template(
+                    "admin/movie-form.jinja",
+                    form=form,
+                    movie=movie,
+                    message="Фильм с таким названием уже существует",
+                ),
+            )
+
+    movie.set_slug()
+
+    genres = (
+        db.query(models.MovieGenre)
+        .filter(models.MovieGenre.id.in_([int(i) for i in form.genres.data]))
+        .all()
+    )
+    movie.genres = genres
+
+    poster_file_url = upload_file(request.files["poster_file"], movie.slug)
+    if poster_file_url:
+        if movie.poster_file:
+            delete_file(movie.poster_file)
+        movie.poster_file = poster_file_url
+
+    return (movie, None)
+
+
 @blueprint.route("/admin/movie-create", methods=["GET", "POST"])
 @login_required
 def movie_create():
@@ -38,24 +76,10 @@ def movie_create():
             release_date=form.release_date.data,
             description=form.description.data,
         )
-        movie.set_slug()
 
-        if db.query(models.Movie).filter(models.Movie.slug == movie.slug).first():
-            return render_template(
-                "admin/movie-form.jinja",
-                form=form,
-                message="Фильм с таким названием уже существует",
-            )
-
-        genres = (
-            db.query(models.MovieGenre)
-            .filter(models.MovieGenre.id.in_([int(i) for i in form.genres.data]))
-            .all()
-        )
-        movie.genres = genres
-
-        poster_file_url = upload_file(request.files["poster_file"], movie.slug)
-        movie.poster_file = poster_file_url
+        (movie, error_render) = before_save_movie(movie, form, db)
+        if error_render:
+            return error_render
 
         db.add(movie)
         db.commit()
@@ -82,31 +106,10 @@ def movie_edit(slug: str):
         movie.title = form.title.data
         movie.release_date = form.release_date.data
         movie.description = form.description.data
-        movie.set_slug()
 
-        if (
-            db.query(models.Movie)
-            .filter(models.Movie.slug == movie.slug, models.Movie.id != movie.id)
-            .first()
-        ):
-            return render_template(
-                "admin/movie-form.jinja",
-                form=form,
-                movie=movie,
-                message="Фильм с таким названием уже существует",
-            )
-
-        genres = (
-            db.query(models.MovieGenre)
-            .filter(models.MovieGenre.id.in_([int(i) for i in form.genres.data]))
-            .all()
-        )
-        movie.genres = genres
-
-        poster_file_url = upload_file(request.files["poster_file"], movie.slug)
-        if poster_file_url:
-            delete_file(movie.poster_file)
-            movie.poster_file = poster_file_url
+        (movie, error_render) = before_save_movie(movie, form, db)
+        if error_render:
+            return error_render
 
         db.commit()
         db.refresh(movie)

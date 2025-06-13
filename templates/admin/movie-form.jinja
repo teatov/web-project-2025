@@ -21,4 +21,9 @@
   {% endif %}
   <button type="submit" class="bg-slate-500 text-white p-2">Сохранить</button>
 </form>
+{% if movie %}
+<form method="post" action="/admin/movie-delete/{{ movie.id }}" class="mt-4">
+  <button type="submit" class="bg-red-500 text-white p-2">Удалить</button>
+</form>
+{% endif %}
 {% endblock %}

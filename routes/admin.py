@@ -99,3 +99,21 @@ def movie_edit(slug: str):
         return redirect(f"/movie/{movie.slug}")
 
     return render_template("admin/movie-form.jinja", form=form, movie=movie)
+
+
+@blueprint.route("/admin/movie-delete/<int:id>", methods=["POST"])
+@login_required
+def movie_delete(id: str):
+    if not current_user.is_admin:
+        return redirect("/")
+
+    db = database.create_session()
+    movie = db.query(models.Movie).filter(models.Movie.id == id).first()
+
+    if not movie:
+        abort(404)
+
+    db.delete(movie)
+    db.commit()
+
+    return redirect(f"/admin")

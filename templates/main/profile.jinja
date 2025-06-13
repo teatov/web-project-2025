@@ -19,7 +19,7 @@
       </div>
       <p><em>{{ format_date(log.created_at) }}</em></p>
       {{ render_log_icons(log) }}
-      <p>{{ log.review }}</p>
+      <p>{{ log.review or "" }}</p>
     </div>
   </li>
   {% endfor %}

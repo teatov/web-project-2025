@@ -1,6 +1,6 @@
 {% extends "_layout.jinja" %} {% block title %}{{ movie.title }}{% endblock %} {% block content %}
 {% from "components/_movie_stat.jinja" import render_movie_stat %}
-{% from "components/_log_icons.jinja" import render_log_icons, icon_watch, icon_like %}
+{% from "components/_log_icons.jinja" import render_log_icons, icon_watch, icon_like, icon_comment %}
 <div class="flex gap-4">
   <div class="space-y-4 flex-none">
     <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
@@ -19,6 +19,10 @@
       <div class="flex items-center gap-2">
         {{ icon_like() }}
         {{ likes }}
+      </div>
+      <div class="flex items-center gap-2">
+        {{ icon_comment() }}
+        {{ reviews|length }}
       </div>
     </div>
   </div>

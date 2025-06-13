@@ -49,6 +49,8 @@ class Movie(Form):
         "Описание", [validators.Length(max=100)], widget=TextArea()
     )
     genres = NonValidatingSelectMultipleField("Жанры")
+    studios = NonValidatingSelectMultipleField("Студии")
+    staff = NonValidatingSelectMultipleField("Персоналии")
 
 
 class GenericRecord(Form):

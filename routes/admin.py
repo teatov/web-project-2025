@@ -52,6 +52,20 @@ def before_save_movie(movie, form, db):
     )
     movie.genres = genres
 
+    studios = (
+        db.query(models.MovieStudio)
+        .filter(models.MovieStudio.id.in_([int(i) for i in form.studios.data]))
+        .all()
+    )
+    movie.studios = studios
+
+    staff = (
+        db.query(models.MovieStaff)
+        .filter(models.MovieStaff.id.in_([int(i) for i in form.staff.data]))
+        .all()
+    )
+    movie.staff = staff
+
     poster_file_url = upload_file(request.files["poster_file"], movie.slug)
     if poster_file_url:
         if movie.poster_file:

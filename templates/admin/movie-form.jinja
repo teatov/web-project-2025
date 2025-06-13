@@ -18,6 +18,8 @@
   </div>
   {{ render_field(form.description, rows="5", class="border p-2 w-full") }}
   {{ render_movie_info_combobox("Жанры", 'genres', "Добавить жанр...", "/api/genres", movie.genres if movie else []) }}
+  {{ render_movie_info_combobox("Студии", 'studios', "Добавить студию...", "/api/studios", movie.studios if movie else []) }}
+  {{ render_movie_info_combobox("Персоналии", 'staff', "Добавить персоналию...", "/api/staff", movie.staff if movie else []) }}
   {% if message %}
   <p class="text-red-500">{{message}}</p>
   {% endif %}

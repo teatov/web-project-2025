@@ -1,5 +1,6 @@
 from wtforms import (
     Form,
+    SelectMultipleField,
     StringField,
     EmailField,
     BooleanField,
@@ -42,6 +43,7 @@ class Movie(Form):
     description = StringField(
         "Описание", [validators.Length(max=100)], widget=TextArea()
     )
+    genres = SelectMultipleField("Жанры")
 
 
 class GenericRecord(Form):

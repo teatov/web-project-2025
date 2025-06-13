@@ -326,7 +326,9 @@ def countries_index():
 @blueprint.route("/admin/country-create", methods=["GET", "POST"])
 @login_required
 def country_create():
-    return make_generic_create(models.MovieCountry, "/admin/countries", "Новая страна")()
+    return make_generic_create(
+        models.MovieCountry, "/admin/countries", "Новая страна"
+    )()
 
 
 @blueprint.route("/admin/country-edit/<int:id>", methods=["GET", "POST"])

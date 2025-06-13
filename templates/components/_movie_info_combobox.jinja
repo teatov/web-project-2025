@@ -1,15 +1,14 @@
-{% macro render_movie_info_combobox(label, add_label, api_url) %}
+{% macro render_movie_info_combobox(label, name, add_label, api_url) %}
 <div x-data="{
+        selectedItems: [],
         allOptions: [],
         options: [],
         isOpen: false,
         openedWithKeyboard: false,
-        selectedOption: null,
         setSelectedOption(option) {
-            this.selectedOption = option
+            this.selectedItems.push(option);
             this.isOpen = false
             this.openedWithKeyboard = false
-            this.$refs.hiddenTextField.value = option.value
         },
         async getFilteredOptions(query) {
             if (!query.trim()) {
@@ -47,7 +46,6 @@
       {{ add_label }}
     </button>
 
-    <input id="addGenre" name="addGenre" x-ref="hiddenTextField" hidden="" />
     <div x-show="isOpen || openedWithKeyboard" id="makesList"
          class="absolute left-0 top-11 z-10 w-full overflow-hidden border border-outline bg-background"
          x-on:click.outside="isOpen = false, openedWithKeyboard = false"
@@ -59,7 +57,7 @@
         <input type="text"
                class="w-full border-b bg-background p-2 text-sm focus:outline-hidden focus-visible:border-primary"
                name="searchField" x-on:input="getFilteredOptions($el.value)"
-               x-ref="searchField" placeholder="Поиск..." />
+               x-ref="searchField" placeholder="Поиск..." autocomplete="off" />
       </div>
 
       <ul class="flex max-h-44 flex-col overflow-y-auto">
@@ -68,16 +66,25 @@
           <span>Результатов не найдено :(</span>
         </li>
         <template x-for="(item, index) in options" x-bind:key="item.value">
-          <li class="combobox-option inline-flex justify-between p-2 text-sm cursor-pointer"
-              role="option" x-on:click="setSelectedOption(item)"
+          <li class="p-2 text-sm cursor-pointer"
+              x-on:click="setSelectedOption(item)"
               x-on:keydown.enter="setSelectedOption(item)" x-bind:id="'option-' + index"
-              tabindex="0">
-            <span x-bind:class="selectedOption == item ? 'font-bold' : null"
-                  x-text="item.label"></span>
-          </li>
+              tabindex="0" x-text="item.label"></li>
         </template>
       </ul>
     </div>
   </div>
+  <select class="hidden" id="{{ name }}" multiple name="{{ name }}">
+    <template x-for="(item, index) in selectedItems" x-bind:key="item.value">
+      <option x-bind:value="item.value" x-text="item.label" selected></option>
+    </template>
+  </select>
+  <ul>
+    <template x-for="(item, index) in selectedItems" x-bind:key="item.value">
+      <li>
+        <span x-text="item.label"></span>
+      </li>
+    </template>
+  </ul>
 </div>
 {% endmacro %}

@@ -2,6 +2,7 @@ from wtforms import (
     Form,
     SelectMultipleField,
     StringField,
+    SelectField,
     EmailField,
     BooleanField,
     DateField,
@@ -14,6 +15,11 @@ from wtforms.validators import DataRequired
 
 
 class NonValidatingSelectMultipleField(SelectMultipleField):
+    def pre_validate(self, form):
+        pass
+
+
+class NonValidatingSelectField(SelectField):
     def pre_validate(self, form):
         pass
 
@@ -49,9 +55,10 @@ class Movie(Form):
     description = StringField(
         "Описание", [validators.Length(max=1000)], widget=TextArea()
     )
-    genres = NonValidatingSelectMultipleField("Жанры")
-    studios = NonValidatingSelectMultipleField("Студии")
-    staff = NonValidatingSelectMultipleField("Персоналии")
+    genres = NonValidatingSelectMultipleField("Жанры", coerce=int)
+    studios = NonValidatingSelectMultipleField("Студии", coerce=int)
+    staff = NonValidatingSelectMultipleField("Персоналии", coerce=int)
+    country = NonValidatingSelectField("Страна", coerce=int)
 
 
 class GenericRecord(Form):

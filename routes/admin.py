@@ -24,12 +24,21 @@ def admin_index():
     return render_template("admin/index.jinja", movies=movies)
 
 
+def movie_info_choice(db):
+    countries = (
+        db.query(models.MovieCountry).order_by(models.MovieCountry.name.asc()).all()
+    )
+    countries_choices = [(i.id, i.name) for i in countries]
+    return countries_choices
+
+
 def before_save_movie(movie, form, db):
     with db.no_autoflush:
         if (
             db.query(models.Movie)
             .filter(
-                models.Movie.slug == slugify(form.title.data), models.Movie.id != movie.id
+                models.Movie.slug == slugify(form.title.data),
+                models.Movie.id != movie.id,
             )
             .first()
         ):
@@ -43,6 +52,9 @@ def before_save_movie(movie, form, db):
                 ),
             )
 
+    movie.title = form.title.data
+    movie.release_date = form.release_date.data
+    movie.description = form.description.data
     movie.set_slug()
 
     genres = (
@@ -66,6 +78,15 @@ def before_save_movie(movie, form, db):
     )
     movie.staff = staff
 
+    country = (
+        db.query(models.MovieCountry)
+        .filter(
+            models.MovieCountry.id == int(form.country.data),
+        )
+        .first()
+    )
+    movie.country = country
+
     poster_file_url = upload_file(request.files["poster_file"], movie.slug)
     if poster_file_url:
         if movie.poster_file:
@@ -81,15 +102,14 @@ def movie_create():
     if not current_user.is_admin:
         return redirect("/")
 
-    form = forms.Movie(request.form)
-    if request.method == "POST" and form.validate():
-        db = database.create_session()
+    db = database.create_session()
+    countries_choices = movie_info_choice(db)
 
-        movie = models.Movie(
-            title=form.title.data,
-            release_date=form.release_date.data,
-            description=form.description.data,
-        )
+    form = forms.Movie(request.form)
+    form.country.choices = countries_choices
+    if request.method == "POST" and form.validate():
+
+        movie = models.Movie()
 
         (movie, error_render) = before_save_movie(movie, form, db)
         if error_render:
@@ -111,16 +131,15 @@ def movie_edit(slug: str):
 
     db = database.create_session()
     movie = db.query(models.Movie).filter(models.Movie.slug == slug).first()
+    countries_choices = movie_info_choice(db)
 
     if not movie:
         abort(404)
 
     form = forms.Movie(request.form, movie)
+    form.country.choices = countries_choices
+    form.country.data = movie.country_id
     if request.method == "POST" and form.validate():
-        movie.title = form.title.data
-        movie.release_date = form.release_date.data
-        movie.description = form.description.data
-
         (movie, error_render) = before_save_movie(movie, form, db)
         if error_render:
             return error_render
@@ -144,7 +163,8 @@ def movie_delete(id: str):
     if not movie:
         abort(404)
 
-    delete_file(movie.poster_file)
+    if movie.poster_file:
+        delete_file(movie.poster_file)
     db.delete(movie)
     db.commit()
 

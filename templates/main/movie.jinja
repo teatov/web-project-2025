@@ -38,11 +38,16 @@
     {% endif %}
     <p>{{ movie.description }}</p>
     <div class="grid grid-cols-2 w-full">
-      <div class="flex">
+      <div class="flex items-end">
         <div class="font-light">Дата выхода</div>
         <div class="grow border-b mb-1 border-dotted"></div>
       </div>
       <div>{{ format_date(movie.release_date) }}</div>
+      <div class="flex items-end">
+        <div class="font-light">Страна</div>
+        <div class="grow border-b mb-1 border-dotted"></div>
+      </div>
+      <div>{{ movie.country.name }}</div>
       {{ render_movie_stat(movie.genres, "Жанры", "genre") }}
       {{ render_movie_stat(movie.studios, "Студии", "studio") }}
       {{ render_movie_stat(movie.staff, "Персоналии", "staff") }}

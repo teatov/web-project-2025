@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, send_from_directory
+from flask import Blueprint, abort, render_template, request, send_from_directory
 import forms
 import upload
 import database
@@ -33,6 +33,17 @@ def search():
     )
 
     return render_template("main/search.jinja", movies=movies, query=query)
+
+
+@blueprint.route("/movie/<slug>")
+def movie(slug: str):
+    db = database.create_session()
+    movie = db.query(models.Movie).filter(models.Movie.slug == slug).first()
+
+    if not movie:
+        abort(404)
+
+    return render_template("main/movie.jinja", movie=movie)
 
 
 @blueprint.route("/uploads/<name>")

@@ -309,3 +309,35 @@ def staff_edit(id: int):
 @login_required
 def staff_delete(id: int):
     return make_generic_delete(models.MovieStaff, id, "/admin/staff")()
+
+
+@blueprint.route("/admin/countries")
+@login_required
+def countries_index():
+    return make_generic_index(
+        models.MovieCountry,
+        "Страны",
+        "Добавить новую страну",
+        "/admin/country-create",
+        "/admin/country-edit",
+    )()
+
+
+@blueprint.route("/admin/country-create", methods=["GET", "POST"])
+@login_required
+def country_create():
+    return make_generic_create(models.MovieCountry, "/admin/countries", "Новая страна")()
+
+
+@blueprint.route("/admin/country-edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def country_edit(id: int):
+    return make_generic_edit(
+        models.MovieCountry, id, "/admin/countries", "/admin/country-delete"
+    )()
+
+
+@blueprint.route("/admin/country-delete/<int:id>", methods=["GET", "POST"])
+@login_required
+def country_delete(id: int):
+    return make_generic_delete(models.MovieCountry, id, "/admin/countries")()

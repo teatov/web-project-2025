@@ -120,7 +120,9 @@ def movie_delete(id: str):
     return redirect(f"/admin")
 
 
-def make_generic_index(model, title: str, create_label: str):
+def make_generic_index(
+    model, title: str, create_label: str, create_url: str, edit_url: str
+):
     def generic_index():
         if not current_user.is_admin:
             return redirect("/")
@@ -133,6 +135,8 @@ def make_generic_index(model, title: str, create_label: str):
             records=records,
             title=title,
             create_label=create_label,
+            create_url=create_url,
+            edit_url=edit_url,
         )
 
     return generic_index
@@ -214,7 +218,13 @@ def make_generic_delete(model, id: int, redirect_url: str):
 @blueprint.route("/admin/studios")
 @login_required
 def studios_index():
-    return make_generic_index(models.MovieStudio, "Студии", "Добавить новую студию")()
+    return make_generic_index(
+        models.MovieStudio,
+        "Студии",
+        "Добавить новую студию",
+        "/admin/studio-create",
+        "/admin/studio-edit",
+    )()
 
 
 @blueprint.route("/admin/studio-create", methods=["GET", "POST"])
@@ -235,3 +245,35 @@ def studio_edit(id: int):
 @login_required
 def studio_delete(id: int):
     return make_generic_delete(models.MovieStudio, id, "/admin/studios")()
+
+
+@blueprint.route("/admin/genres")
+@login_required
+def genres_index():
+    return make_generic_index(
+        models.MovieGenre,
+        "Жанры",
+        "Добавить новый жанр",
+        "/admin/genre-create",
+        "/admin/genre-edit",
+    )()
+
+
+@blueprint.route("/admin/genre-create", methods=["GET", "POST"])
+@login_required
+def genre_create():
+    return make_generic_create(models.MovieGenre, "/admin/genres", "Новый жанр")()
+
+
+@blueprint.route("/admin/genre-edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def genre_edit(id: int):
+    return make_generic_edit(
+        models.MovieGenre, id, "/admin/genres", "/admin/genre-delete"
+    )()
+
+
+@blueprint.route("/admin/genre-delete/<int:id>", methods=["GET", "POST"])
+@login_required
+def genre_delete(id: int):
+    return make_generic_delete(models.MovieGenre, id, "/admin/genres")()

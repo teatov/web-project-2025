@@ -18,7 +18,7 @@ def admin_index():
         return redirect("/")
 
     db = database.create_session()
-    movies = db.query(models.Movie).all()
+    movies = db.query(models.Movie).order_by(models.Movie.created_at.desc()).all()
 
     return render_template("admin/index.jinja", movies=movies)
 

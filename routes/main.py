@@ -14,7 +14,7 @@ def index():
         db.query(models.Movie).order_by(models.Movie.created_at.desc()).limit(12).all()
     )
 
-    return render_template("index.jinja", movies=movies)
+    return render_template("main/index.jinja", movies=movies)
 
 
 @blueprint.route("/uploads/<name>")

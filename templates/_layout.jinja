@@ -23,6 +23,9 @@
     </nav>
     <div class="m-4 space flex gap-4 items-center">
       {% if current_user.is_authenticated %}
+      {% if current_user.is_admin %}
+      <a href="/admin" class="hover:text-slate-500">Админ-панель</a>
+      {% endif %}
       <form method="post" action="/logout">
         <button type="submit" class="hover:text-red-500">Выход</button>
       </form>

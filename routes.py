@@ -73,6 +73,11 @@ def logout():
     return redirect("/")
 
 
+@blueprint.route("/admin")
+def admin_index():
+    return render_template("admin/index.jinja")
+
+
 @blueprint.errorhandler(404)
 def page_not_found(_):
     return render_template("error.jinja", message="404 Страница не найдена"), 404

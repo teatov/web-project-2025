@@ -1,0 +1,26 @@
+{% extends "_layout.jinja" %} {% block title %}{{ movie.title }}{% endblock %} {% block content %}
+{% from "_formhelpers.jinja" import render_field %}
+<div class="flex gap-4">
+  <div class="space-y-4">
+    <a href="/movie/{{ movie.slug }}">
+      <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
+           class="aspect-2/3 h-80 object-cover rounded-md">
+    </a>
+  </div>
+  <div class="grow space-y-4">
+    <h1>
+      <span class="font-bold text-2xl">{{ movie.title }}</span>
+      <span class="font-light text-xl">{{ format_year(movie.release_date) }}</span>
+    </h1>
+    <form method="post" class="space-y-4">
+      {{ render_field(form.watched, div_class="flex gap-2", checked=log.watched) }}
+      {{ render_field(form.liked, div_class="flex gap-2", checked=log.liked) }}
+      {{ render_field(form.watchlist, div_class="flex gap-2", checked=log.watchlist) }}
+      {{ render_field(form.rating) }}
+      {{ render_field(form.review, rows=5) }}
+      <button type="submit" class="bg-slate-500 text-white p-2">Сохранить</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

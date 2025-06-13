@@ -1,8 +1,9 @@
-from flask import Blueprint, abort, render_template, request, send_from_directory
+from flask import Blueprint, abort, redirect, render_template, request, send_from_directory
 import forms
 import upload
 import database
 import models
+from flask_login import current_user
 
 blueprint = Blueprint("main", __name__, template_folder="templates")
 
@@ -50,6 +51,42 @@ def movie(slug: str):
         abort(404)
 
     return render_template("main/movie.jinja", movie=movie)
+
+
+@blueprint.route("/movie/<slug>/log", methods=["GET", "POST"])
+def movie_log(slug: str):
+    db = database.create_session()
+    movie = db.query(models.Movie).filter(models.Movie.slug == slug).first()
+
+    if not movie:
+        abort(404)
+
+    log = (
+        db.query(models.UserMovieLog)
+        .filter(
+            models.UserMovieLog.movie_id == movie.id,
+            models.UserMovieLog.user_id == current_user.id,
+        )
+        .first()
+    )
+
+    if not log:
+        log = models.UserMovieLog(user_id=current_user.id, movie_id=movie.id)
+
+    form = forms.UserMovieLog(request.form, log)
+    if request.method == "POST" and form.validate():
+        log.watched = form.watched.data
+        log.liked = form.liked.data
+        log.watchlist = form.watchlist.data
+        log.rating = form.rating.data
+        log.review = form.review.data
+    
+        if not log.created_at:
+            db.add(log)
+        db.commit()
+        return redirect(f"/movie/{movie.slug}")
+
+    return render_template("main/movie-log.jinja", movie=movie, log=log, form=form)
 
 
 @blueprint.route("/profile/<int:id>")

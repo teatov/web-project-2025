@@ -7,6 +7,7 @@ from wtforms import (
     DateField,
     FileField,
     validators,
+    IntegerField,
 )
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
@@ -58,3 +59,14 @@ class GenericRecord(Form):
         locales = ["ru_RU", "ru"]
 
     name = StringField("Название", [validators.Length(max=100), DataRequired()])
+
+
+class UserMovieLog(Form):
+    class Meta:
+        locales = ["ru_RU", "ru"]
+
+    watched = BooleanField("Просмотрено", [])
+    liked = BooleanField("Понравилось", [])
+    watchlist = BooleanField("Посмотреть позже", [])
+    rating = IntegerField("Рейтинг", [])
+    review = StringField("Обзор", [validators.Length(max=500)], widget=TextArea())

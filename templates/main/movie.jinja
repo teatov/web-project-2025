@@ -1,9 +1,14 @@
 {% extends "_layout.jinja" %} {% block title %}{{ movie.title }}{% endblock %} {% block content %}
 {% from "components/_movie_stat.jinja" import render_movie_stat %}
 <div class="flex gap-4">
-  <div>
+  <div class="space-y-4">
     <img src="/uploads/{{ movie.poster_file }}" alt="{{ movie.title }}"
          class="aspect-2/3 h-80 object-cover rounded-md">
+    {% if current_user.is_authenticated %}
+    <a href="/movie/{{ movie.slug }}/log" class="bg-slate-500 text-white p-2 inline-block w-full text-center">
+      Журналировать!
+    </a>
+    {% endif %}
   </div>
   <div class="grow space-y-4">
     <h1>

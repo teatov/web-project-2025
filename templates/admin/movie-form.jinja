@@ -1,0 +1,12 @@
+{% set title = "Редактирование: " + movie.title if movie else "Новый фильм" %}
+{% extends "admin/_layout.jinja" %} {% block title %}{{ title }}{% endblock %}
+{% block content_admin %}
+{% from "_formhelpers.jinja" import render_field %}
+<h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
+<form method="post" class="space-y-4">
+  {{ render_field(form.title, class="border p-2 w-full") }}
+  {{ render_field(form.release_date) }}
+  {{ render_field(form.description, rows="10", class="border p-2 w-full") }}
+  <button type="submit" class="bg-slate-500 text-white p-2">Сохранить</button>
+</form>
+{% endblock %}

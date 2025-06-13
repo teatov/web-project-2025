@@ -1,13 +1,11 @@
-{% extends "_layout.jinja" %} {% block title %}Регистрация{% endblock %} {% block
-content %}
+{% extends "_layout.jinja" %} {% block title %}Регистрация{% endblock %} {% block content %}
 <h1 class="text-2xl font-bold mb-4">Регистрация</h1>
 {% from "_formhelpers.jinja" import render_field %}
 <form method="post" class="space-y-4">
-  <dl class="space-y-4">
-    {{ render_field(form.username) }} {{ render_field(form.email) }} {{
-    render_field(form.password, type="password") }} {{
-    render_field(form.password_confirm, type="password") }}
-  </dl>
+  {{ render_field(form.username) }}
+  {{ render_field(form.email) }}
+  {{ render_field(form.password, type="password") }}
+  {{ render_field(form.password_confirm, type="password") }}
   {% if message %}
   <p class="text-red-500">{{message}}</p>
   {% endif %}

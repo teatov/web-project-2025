@@ -1,6 +1,15 @@
-{% extends "_layout.jinja" %} {% block title %}:){% endblock %} {% block content
-%}
-<h1 class="text-3xl font-bold underline text-center mb-4">
-  Админ-панель
-</h1>
+{% extends "admin/_layout.jinja" %} {% block title %}Фильмы{% endblock %} {% block content_admin %}
+<h1 class="text-2xl font-bold mb-4">Фильмы</h1>
+<p class="pb-4">
+  <a href="/admin/movie-create" class="bg-slate-500 text-white p-2">Добавить новый фильм</a>
+</p>
+<ul>
+  {% for movie in movies %}
+  <li>
+    <a href="/admin/movie-edit/{{ movie.id }}" class="hover:text-slate-500">
+      {{ movie.title }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
 {% endblock %}

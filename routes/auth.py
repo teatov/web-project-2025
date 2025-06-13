@@ -21,12 +21,12 @@ def signup():
     if request.method == "POST" and form.validate():
         if form.password.data != form.password_confirm.data:
             return render_template(
-                "signup.jinja", form=form, message="Пароли не совпадают"
+                "auth/signup.jinja", form=form, message="Пароли не совпадают"
             )
         db = database.create_session()
         if db.query(models.User).filter(models.User.email == form.email.data).first():
             return render_template(
-                "signup.jinja", form=form, message="Эта электропочта уже занята"
+                "auth/signup.jinja", form=form, message="Эта электропочта уже занята"
             )
         user = models.User(
             username=form.username.data,
@@ -37,7 +37,7 @@ def signup():
         db.commit()
         return redirect("/login")
 
-    return render_template("signup.jinja", form=form)
+    return render_template("auth/signup.jinja", form=form)
 
 
 @blueprint.route("/login", methods=["GET", "POST"])
@@ -53,12 +53,12 @@ def login():
         )
         if not user or not user.check_password(form.password.data):
             return render_template(
-                "login.jinja", form=form, message="Некорректная электропочта или пароль"
+                "auth/login.jinja", form=form, message="Некорректная электропочта или пароль"
             )
         login_user(user, remember=form.remember_me.data)
         return redirect("/")
 
-    return render_template("login.jinja", form=form)
+    return render_template("auth/login.jinja", form=form)
 
 
 @blueprint.route("/logout", methods=["POST"])

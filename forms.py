@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, EmailField, BooleanField, validators
+from wtforms import Form, StringField, EmailField, BooleanField, DateField, validators
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
 
@@ -22,3 +22,12 @@ class LogIn(Form):
     email = EmailField("Электропочта", [validators.Length(max=35), DataRequired()])
     password = StringField("Пароль", [validators.Length(max=50), DataRequired()])
     remember_me = BooleanField("Запомнить меня")
+
+
+class Movie(Form):
+    class Meta:
+        locales = ["ru_RU", "ru"]
+
+    title = StringField("Название", [validators.Length(max=100), DataRequired()])
+    release_date = DateField("Дата выхода", [DataRequired()])
+    description = StringField("Описание", [validators.Length(max=100)], widget=TextArea())

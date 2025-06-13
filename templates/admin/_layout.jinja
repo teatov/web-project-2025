@@ -1,0 +1,10 @@
+{% extends "_layout.jinja" %} {% block content %}
+<div class="flex">
+  <aside class="w-40">
+    <a href="/admin" class="hover:text-slate-500">Фильмы</a>
+  </aside>
+  <div class="w-full">
+    {% block content_admin %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

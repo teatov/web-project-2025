@@ -67,6 +67,7 @@ class Movie(Base, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String)
     slug = sqlalchemy.Column(sqlalchemy.String, unique=True)
     release_date = sqlalchemy.Column(sqlalchemy.Date)
+    description = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
     poster_file = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_at = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
 

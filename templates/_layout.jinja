@@ -31,6 +31,7 @@
       {% if current_user.is_admin %}
       <a href="/admin" class="hover:text-slate-500">Админ-панель</a>
       {% endif %}
+      <a href="/profile/{{ current_user.id }}" class="hover:text-slate-500">Профиль</a>
       <form method="post" action="/logout">
         <button type="submit" class="hover:text-red-500">Выход</button>
       </form>

@@ -52,6 +52,17 @@ def movie(slug: str):
     return render_template("main/movie.jinja", movie=movie)
 
 
+@blueprint.route("/profile/<int:id>")
+def profile(id: int):
+    db = database.create_session()
+    user = db.query(models.User).filter(models.User.id == id).first()
+
+    if not user:
+        abort(404)
+
+    return render_template("main/profile.jinja", user=user)
+
+
 @blueprint.route("/uploads/<name>")
 def download_file(name):
     return send_from_directory(upload.UPLOAD_FOLDER, name)

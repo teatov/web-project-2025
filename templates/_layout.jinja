@@ -21,6 +21,10 @@
              width="24"
              height="24" />MovieLog</a>
     </nav>
+    <form method="get" action="/search">
+      <input type="text" id="query" name="query" maxlength="100" class="border p-2"
+             placeholder="Поиск..." />
+    </form>
     <div class="m-4 space flex gap-4 items-center">
       {% if current_user.is_authenticated %}
       {% if current_user.is_admin %}

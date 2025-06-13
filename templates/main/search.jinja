@@ -1,0 +1,5 @@
+{% extends "_layout.jinja" %} {% block title %}Поиск{% endblock %} {% block content %}
+{% from "components/_movie_ul.jinja" import render_movie_ul %}
+<h1 class="text-2xl font-bold mb-4">Поиск: {{ query }}</h1>
+{{ render_movie_ul(movies) }}
+{% endblock %}

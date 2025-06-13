@@ -1,4 +1,12 @@
-from wtforms import Form, StringField, EmailField, BooleanField, DateField, FileField, validators
+from wtforms import (
+    Form,
+    StringField,
+    EmailField,
+    BooleanField,
+    DateField,
+    FileField,
+    validators,
+)
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired
 
@@ -31,4 +39,6 @@ class Movie(Form):
     title = StringField("Название", [validators.Length(max=100), DataRequired()])
     release_date = DateField("Дата выхода", [DataRequired()])
     poster_file = FileField("Постер", [])
-    description = StringField("Описание", [validators.Length(max=100)], widget=TextArea())
+    description = StringField(
+        "Описание", [validators.Length(max=100)], widget=TextArea()
+    )

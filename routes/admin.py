@@ -277,3 +277,35 @@ def genre_edit(id: int):
 @login_required
 def genre_delete(id: int):
     return make_generic_delete(models.MovieGenre, id, "/admin/genres")()
+
+
+@blueprint.route("/admin/staff")
+@login_required
+def staff_index():
+    return make_generic_index(
+        models.MovieStaff,
+        "Персоналии",
+        "Добавить новую персоналию",
+        "/admin/staff-create",
+        "/admin/staff-edit",
+    )()
+
+
+@blueprint.route("/admin/staff-create", methods=["GET", "POST"])
+@login_required
+def staff_create():
+    return make_generic_create(models.MovieStaff, "/admin/staff", "Новая персоналия")()
+
+
+@blueprint.route("/admin/staff-edit/<int:id>", methods=["GET", "POST"])
+@login_required
+def staff_edit(id: int):
+    return make_generic_edit(
+        models.MovieStaff, id, "/admin/staff", "/admin/staff-delete"
+    )()
+
+
+@blueprint.route("/admin/staff-delete/<int:id>", methods=["GET", "POST"])
+@login_required
+def staff_delete(id: int):
+    return make_generic_delete(models.MovieStaff, id, "/admin/staff")()

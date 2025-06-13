@@ -4,7 +4,6 @@ import database
 import models
 from flask_login import LoginManager
 import routes.admin
-import routes.error
 import routes.main
 import routes.auth
 import upload
@@ -19,7 +18,6 @@ login_manager.init_app(app)
 app.register_blueprint(routes.main.blueprint)
 app.register_blueprint(routes.auth.blueprint)
 app.register_blueprint(routes.admin.blueprint)
-app.register_blueprint(routes.error.blueprint)
 
 database.global_init("_data.db")
 
@@ -28,7 +26,12 @@ def format_date(date: datetime.date) -> str:
     return date.strftime("%d.%m.%Y")
 
 
+def format_year(date: datetime.date) -> str:
+    return date.strftime("%Y")
+
+
 app.jinja_env.globals.update(format_date=format_date)
+app.jinja_env.globals.update(format_year=format_year)
 
 
 @login_manager.user_loader
@@ -40,3 +43,13 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return render_template("error.jinja", message="401 Неавторизованный"), 401
+
+
+@app.errorhandler(404)
+def page_not_found(_):
+    return render_template("error.jinja", message="404 Страница не найдена"), 404
+
+
+@app.errorhandler(405)
+def page_not_found(_):
+    return render_template("error.jinja", message="405 Метод не разрешён"), 405
